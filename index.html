@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ZILA | Catálogo de calzado</title>
+  <meta name="description" content="Catálogo online de ZILA. Elegí modelo, color y talle y consultá disponibilidad por WhatsApp. Malabia 1918, Palermo Soho.">
+  <meta name="theme-color" content="#161513">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="#inicio">
+        <img src="logo-zila.jpg" alt="ZILA">
+        <span><strong>ZILA</strong><small>Calzado · Palermo Soho</small></span>
+      </a>
+      <div class="nav-actions">
+        <button class="nav-link nav-button" id="openSizeGuideTop">Guía de talles</button>
+        <a class="nav-link" href="https://www.instagram.com/zila.calzados/" target="_blank" rel="noopener">Instagram</a>
+        <button class="bag-link" id="openBagTop">Bolsa <span id="bagCountTop">0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="container">
+        <div class="hero-card">
+          <div class="hero-copy">
+            <span class="eyebrow">Cuero argentino · diseño urbano</span>
+            <h1>Elegí tu próximo par.</h1>
+            <p>Explorá la colección, elegí color y talle y consultá disponibilidad directamente por WhatsApp.</p>
+            <div class="hero-actions">
+              <a class="btn btn-light" href="#catalogo">Ver colección</a>
+              <a class="btn btn-outline" href="https://www.instagram.com/zila.calzados/" target="_blank" rel="noopener">Ver Instagram</a>
+            </div>
+          </div>
+          <div class="hero-editorial">
+            <img src="hero-zila.jpg" alt="Botas ZILA de cuero argentino en look urbano">
+          </div>
+        </div>
+
+        <div class="service-grid">
+          <article><span>📍</span><div><strong>Local</strong><p>Malabia 1918, Palermo Soho</p></div></article>
+          <article><span>📦</span><div><strong>Envíos</strong><p>A todo el país</p></div></article>
+          <article class="service-card-button" id="openSizeGuideCard" role="button" tabindex="0"><span>👢</span><div><strong>Guía de talles</strong><p>Cómo medir tu pie</p></div></article>
+          <article><span>🕙</span><div><strong>Atención</strong><p>Lunes a viernes · 10 a 19 hs</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="catalogo" class="catalog-section">
+      <div class="container">
+        <div class="catalog-head">
+          <div>
+            <span class="section-kicker">Colección ZILA</span>
+            <h2>Encontrá tu modelo</h2>
+            <p><span id="resultCount">0</span> modelos disponibles en esta primera carga.</p>
+          </div>
+          <label class="search-box">
+            <span>⌕</span>
+            <input id="searchInput" type="search" placeholder="Buscar modelo, material o categoría…">
+          </label>
+        </div>
+
+        <div id="filters" class="filters"></div>
+        <div id="products" class="products-grid"></div>
+        <div id="emptyState" class="empty-state" hidden>
+          <strong>No encontramos modelos</strong>
+          <p>Probá con otra búsqueda o elegí otra categoría.</p>
+          <button id="clearFilters" class="btn btn-dark">Ver todo</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside id="bagbar" class="bagbar">
+    <div>
+      <strong id="bagCount">0 productos</strong>
+      <small>Total estimado: <b id="bagTotal">$0</b></small>
+    </div>
+    <button id="openBag" class="btn btn-dark" disabled>Revisar selección</button>
+  </aside>
+
+  <div id="productModal" class="modal">
+    <div class="modal-card product-modal-card">
+      <button class="close" id="closeProductModal" aria-label="Cerrar">×</button>
+      <div class="product-detail">
+        <div class="gallery">
+          <div class="main-image-wrap"><img id="detailMainImage" alt=""></div>
+          <div id="detailThumbs" class="thumbs"></div>
+        </div>
+        <div class="detail-copy">
+          <span id="detailCategory" class="section-kicker"></span>
+          <h2 id="detailName"></h2>
+          <p id="detailDescription" class="detail-description"></p>
+          <p id="detailMaterial" class="detail-meta"></p>
+          <div id="detailPrice" class="detail-price"></div>
+          <div class="option-block"><label>Color</label><div id="colorOptions" class="option-pills"></div></div>
+          <div class="option-block">
+            <div class="option-label-row"><label>Talle</label><button type="button" class="size-guide-inline" id="openSizeGuideProduct">¿Cuál es mi talle?</button></div>
+            <div id="sizeOptions" class="option-pills"></div>
+          </div>
+          <p id="stockHint" class="stock-hint"></p>
+          <button id="addToBag" class="btn btn-dark btn-full" disabled>Agregar a la selección</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sizeGuideModal" class="modal">
+    <div class="modal-card size-guide-card">
+      <button class="close" id="closeSizeGuideModal" aria-label="Cerrar">×</button>
+      <div class="size-guide-head">
+        <span class="section-kicker">ZILA · Guía de talles</span>
+        <h2>Encontrá tu talle</h2>
+        <p>Colocá el talón contra la pared y medí el largo de tu pie, desde la pared hasta la punta. Después buscá la medida más cercana en la tabla.</p>
+      </div>
+      <div class="size-guide-grid">
+        <div class="measure-panel">
+          <div class="measure-illustration" aria-label="Ilustración de cómo medir el pie">
+            <svg viewBox="0 0 420 250" role="img" aria-label="Talón apoyado en la pared y medición del largo del pie">
+              <rect x="58" y="28" width="13" height="175" rx="5" fill="#cbc6be"/>
+              <line x1="48" y1="203" x2="350" y2="203" stroke="#bdb7ae" stroke-width="6" stroke-linecap="round"/>
+              <path d="M72 67 C110 70,125 89,130 120 C134 143,150 153,190 164 C227 175,272 178,314 185 C329 188,338 195,337 204 L80 204 C75 181,72 145,72 67 Z" fill="#dad6d0"/>
+              <line x1="80" y1="224" x2="337" y2="224" stroke="#9b7446" stroke-width="3" stroke-dasharray="6 6"/>
+              <line x1="80" y1="214" x2="80" y2="235" stroke="#9b7446" stroke-width="3"/>
+              <line x1="337" y1="214" x2="337" y2="235" stroke="#9b7446" stroke-width="3"/>
+              <text x="173" y="246" font-family="DM Sans, sans-serif" font-size="16" fill="#726b63">Medí desde el talón hasta la punta</text>
+              <text x="17" y="116" font-family="DM Sans, sans-serif" font-size="14" fill="#726b63" transform="rotate(-90 17 116)">Pared</text>
+            </svg>
+          </div>
+          <div class="measure-steps">
+            <div><b>1</b><span>Apoyá el talón contra una pared, con el pie sobre una superficie plana.</span></div>
+            <div><b>2</b><span>Medí en centímetros desde la pared hasta la punta del dedo más largo.</span></div>
+            <div><b>3</b><span>Buscá la medida correspondiente en la tabla. Las medidas son aproximadas.</span></div>
+          </div>
+        </div>
+        <div class="size-table-wrap">
+          <table class="size-table"><thead><tr><th>Talle</th><th>Medida del pie</th></tr></thead><tbody>
+            <tr><td>35</td><td>22,8 cm</td></tr><tr><td>36</td><td>23,5 cm</td></tr><tr><td>37</td><td>24,1 cm</td></tr><tr><td>38</td><td>25 cm</td></tr><tr><td>39</td><td>25,5 cm</td></tr><tr><td>40</td><td>26 cm</td></tr><tr><td>41</td><td>26,5 cm</td></tr>
+          </tbody></table>
+          <div class="size-note"><strong>Consejo ZILA</strong><p>Si tu medida queda entre dos talles, consultanos por WhatsApp antes de elegir. El calce puede variar según el modelo.</p><a href="https://wa.me/5491137696880?text=Hola%20ZILA,%20necesito%20ayuda%20para%20elegir%20mi%20talle." target="_blank" rel="noopener" class="btn btn-dark size-whatsapp">Consultar por WhatsApp</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="bagModal" class="modal">
+    <div class="modal-card bag-modal-card">
+      <div class="modal-head"><div><span class="section-kicker">Tu selección</span><h2>Consultar por WhatsApp</h2></div><button class="close" id="closeBagModal" aria-label="Cerrar">×</button></div>
+      <div id="bagItems" class="bag-items"></div>
+      <div class="bag-summary-row"><span>Total estimado</span><strong id="checkoutTotal">$0</strong></div>
+      <form id="checkoutForm" class="checkout-form">
+        <label><span>Nombre y apellido *</span><input id="customerName" required></label>
+        <label><span>Teléfono *</span><input id="customerPhone" required inputmode="tel"></label>
+        <label><span>Entrega</span><select id="deliveryType"><option>Retiro por el local</option><option>Envío a domicilio</option></select></label>
+        <label><span>Localidad</span><input id="customerLocation" placeholder="Ej.: Palermo, Martínez, Córdoba…"></label>
+        <label class="full"><span>Aclaraciones</span><textarea id="customerNotes" placeholder="Horario, consulta, referencia u otra indicación"></textarea></label>
+      </form>
+      <button id="sendWhatsapp" class="btn whatsapp-btn btn-full">Enviar consulta por WhatsApp</button>
+      <p class="legal-note">La disponibilidad, el costo de envío y la forma de pago se confirman por WhatsApp.</p>
+    </div>
+  </div>
+
+  <footer><div class="container footer-content"><div><strong>ZILA</strong><span>Malabia 1918 · Palermo Soho</span></div><div class="footer-links"><button id="openSizeGuideFooter">Guía de talles</button><a href="https://wa.me/5491137696880" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.instagram.com/zila.calzados/" target="_blank" rel="noopener">@zila.calzados</a></div></div></footer>
+
+  <script src="products-data.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
