@@ -45,7 +45,7 @@ async function loadCatalog(){
 
     if(error) throw error;
 
-    PRODUCTS = (data || []).map(row => ({
+    const onlineProducts = (data || []).map(row => ({
       id: row.id,
       sku: row.sku,
       name: row.name,
@@ -77,7 +77,12 @@ async function loadCatalog(){
         .sort((a,b) => a.order - b.order)
     }));
 
-    console.info(`ZILA: catálogo online cargado (${PRODUCTS.length} productos).`);
+    if(onlineProducts.length){
+      PRODUCTS = onlineProducts;
+      console.info(`ZILA: catálogo online cargado (${PRODUCTS.length} productos).`);
+    }else{
+      console.warn(`ZILA: Supabase respondió sin productos. Se conservan ${PRODUCTS.length} productos de respaldo.`);
+    }
   }catch(error){
     console.error("ZILA: no se pudo cargar Supabase; se usa el catálogo de respaldo.", error);
   }
