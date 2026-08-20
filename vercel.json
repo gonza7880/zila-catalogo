@@ -4,6 +4,13 @@
   "rewrites": [
     { "source": "/admin", "destination": "/admin/index.html" }
   ],
+  "redirects": [
+    {
+      "source": "/hero-zila.jpg",
+      "destination": "https://drive.google.com/thumbnail?id=1vGB3wG3wtiAZnigunJZWyGq74_cweDGG&sz=w1600",
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/admin/(.*)",
