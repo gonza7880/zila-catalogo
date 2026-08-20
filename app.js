@@ -79,6 +79,8 @@ async function loadCatalog(){
 
     if(onlineProducts.length){
       PRODUCTS = onlineProducts;
+      renderFilters();
+      renderProducts();
       console.info(`ZILA: catálogo online cargado (${PRODUCTS.length} productos).`);
     }else{
       console.warn(`ZILA: Supabase respondió sin productos. Se conservan ${PRODUCTS.length} productos de respaldo.`);
@@ -101,7 +103,6 @@ let selectedSize = null;
 let bag = JSON.parse(sessionStorage.getItem("zila_bag")||"[]");
 
 async function init(){
-  await loadCatalog();
   renderFilters(); renderProducts(); renderBag();
   $("searchInput").addEventListener("input",e=>{search=e.target.value.trim();renderProducts()});
   $("filters").addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(!b)return;category=b.dataset.cat;renderFilters();renderProducts()});
@@ -121,6 +122,9 @@ async function init(){
   $("sendWhatsapp").onclick=sendWhatsapp;
   document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal("productModal");closeModal("bagModal");closeModal("sizeGuideModal")}});
   document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("open")}));
+
+  // Refresca precios, stock e imágenes desde Supabase sin bloquear el primer render.
+  void loadCatalog();
 }
 function renderFilters(){
   const cats=["Todos",...new Set(PRODUCTS.map(p=>p.category).filter(Boolean))];
