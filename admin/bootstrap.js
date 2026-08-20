@@ -81,17 +81,22 @@ if(!isSupabaseConfigured){
 
     return await new Promise(resolve => {
       let done = false;
+      let subscription = null;
+      let timer = null;
+
       const finish = value => {
         if(done) return;
         done = true;
-        clearTimeout(timer);
+        if(timer) clearTimeout(timer);
         subscription?.unsubscribe();
         resolve(value);
       };
-      const { data:{ subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+
+      const listener = supabase.auth.onAuthStateChange((_event, nextSession) => {
         if(nextSession) finish(nextSession);
       });
-      const timer = setTimeout(() => finish(null), timeoutMs);
+      subscription = listener.data.subscription;
+      timer = setTimeout(() => finish(null), timeoutMs);
     });
   }
 
