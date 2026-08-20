@@ -10,6 +10,44 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .footer-links .footer-link-icon{
+      display:inline-flex;
+      align-items:center;
+      flex-direction:row;
+      gap:9px;
+      border:0;
+      background:none;
+      padding:0;
+      color:var(--ink);
+      font:inherit;
+      font-size:13px;
+      text-decoration:none;
+      transition:color .18s ease,transform .18s ease;
+    }
+    .footer-links .footer-link-icon:hover{
+      color:var(--accent);
+      transform:translateY(-1px);
+    }
+    .footer-links .footer-link-icon span{
+      color:inherit;
+      font-size:13px;
+    }
+    .footer-links .footer-link-icon svg{
+      width:18px;
+      height:18px;
+      flex:0 0 18px;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:1.8;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    .footer-links .footer-link-icon .brand-icon{
+      fill:currentColor;
+      stroke:none;
+    }
+  </style>
 </head>
 <body>
   <header class="topbar">
@@ -167,7 +205,35 @@
     </div>
   </div>
 
-  <footer><div class="container footer-content"><div><strong>ZILA</strong><span>Malabia 1918 · Palermo Soho</span></div><div class="footer-links"><button id="openSizeGuideFooter">Guía de talles</button><a href="https://wa.me/5491137696880" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.instagram.com/zila.calzados/" target="_blank" rel="noopener">@zila.calzados</a></div></div></footer>
+  <footer>
+    <div class="container footer-content">
+      <div>
+        <strong>ZILA</strong>
+        <span>Malabia 1918 · Palermo Soho</span>
+      </div>
+      <div class="footer-links">
+        <button id="openSizeGuideFooter" class="footer-link-icon" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 19.5 19.5 4l.5 3.5-12 12L4 19.5Z"></path>
+            <path d="m8 15 1.5 1.5M11 12l1.5 1.5M14 9l1.5 1.5"></path>
+          </svg>
+          <span>Guía de talles</span>
+        </button>
+        <a class="footer-link-icon" href="https://wa.me/5491137696880" target="_blank" rel="noopener" aria-label="Contactar a ZILA por WhatsApp">
+          <svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.52 3.48A11.86 11.86 0 0 0 12.07 0C5.55 0 .24 5.31.24 11.84c0 2.09.55 4.13 1.58 5.93L0 24l6.39-1.67a11.8 11.8 0 0 0 5.67 1.45h.01c6.52 0 11.83-5.31 11.83-11.84 0-3.16-1.23-6.13-3.38-8.46ZM12.07 21.7h-.01a9.8 9.8 0 0 1-4.99-1.37l-.36-.21-3.79.99 1.01-3.69-.24-.38a9.76 9.76 0 0 1-1.51-5.2c0-5.42 4.41-9.83 9.84-9.83 2.63 0 5.1 1.02 6.96 2.88a9.77 9.77 0 0 1 2.88 6.96c0 5.42-4.41 9.84-9.83 9.84Zm5.39-7.35c-.29-.14-1.72-.85-1.98-.94-.27-.1-.46-.14-.66.14-.19.29-.75.94-.92 1.13-.17.19-.34.22-.63.07-.29-.14-1.21-.45-2.31-1.43-.85-.76-1.43-1.7-1.6-1.99-.17-.29-.02-.45.13-.6.14-.14.29-.34.43-.51.14-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.14-.66-1.59-.9-2.18-.24-.58-.48-.5-.66-.5h-.56c-.19 0-.48.07-.73.36-.24.29-.95.93-.95 2.28s.98 2.65 1.12 2.83c.14.19 1.91 2.92 4.62 4.1.65.28 1.16.45 1.56.58.66.21 1.26.18 1.73.11.53-.08 1.72-.7 1.96-1.37.24-.67.24-1.25.17-1.37-.07-.12-.27-.19-.56-.33Z"></path>
+          </svg>
+          <span>WhatsApp</span>
+        </a>
+        <a class="footer-link-icon" href="https://www.instagram.com/zila.calzados/" target="_blank" rel="noopener" aria-label="Abrir Instagram de ZILA">
+          <svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 2A3.75 3.75 0 0 0 4 7.75v8.5A3.75 3.75 0 0 0 7.75 20h8.5A3.75 3.75 0 0 0 20 16.25v-8.5A3.75 3.75 0 0 0 16.25 4h-8.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm5.25-3.25a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5Z"></path>
+          </svg>
+          <span>@zila.calzados</span>
+        </a>
+      </div>
+    </div>
+  </footer>
 
   <script src="products-data.js"></script>
   <script type="module" src="app.js"></script>
