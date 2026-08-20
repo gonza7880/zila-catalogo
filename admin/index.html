@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>ZILA | Administrador</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./admin.css">
+</head>
+<body>
+  <div id="configAlert" class="config-alert" hidden>Falta conectar Supabase. Completá <code>supabase-config.js</code>.</div>
+
+  <section id="loginView" class="login-view">
+    <div class="login-card">
+      <img src="../logo-zila.jpg" alt="ZILA" class="login-logo">
+      <span class="eyebrow">Administración</span>
+      <h1>Catálogo ZILA</h1>
+      <p>Administrá modelos, precios, colores, talles, stock e imágenes.</p>
+      <form id="loginForm">
+        <label>Email<input id="loginEmail" type="email" required autocomplete="email"></label>
+        <label>Contraseña<input id="loginPassword" type="password" required autocomplete="current-password"></label>
+        <button class="btn btn-dark" type="submit">Ingresar</button>
+      </form>
+      <p id="loginError" class="error"></p>
+    </div>
+  </section>
+
+  <div id="adminView" class="admin-shell" hidden>
+    <aside class="sidebar">
+      <a href="../" class="admin-brand"><img src="../logo-zila.jpg" alt="ZILA"><span><strong>ZILA</strong><small>Administrador</small></span></a>
+      <nav><button class="nav-item active" data-view="products">Productos</button><button class="nav-item" data-view="settings">Datos del negocio</button></nav>
+      <div class="sidebar-bottom"><a href="../" target="_blank" rel="noopener">Ver tienda ↗</a><button id="logoutBtn">Cerrar sesión</button></div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-top">
+        <div><span class="eyebrow">Panel</span><h1 id="pageTitle">Productos</h1></div>
+        <div class="top-actions"><span id="currentUser" class="user-email"></span><button id="newProductBtn" class="btn btn-dark">+ Nuevo producto</button></div>
+      </header>
+
+      <section id="productsView">
+        <div class="stats-grid">
+          <article><small>Productos</small><strong id="statProducts">0</strong></article>
+          <article><small>Publicados</small><strong id="statActive">0</strong></article>
+          <article><small>Variantes</small><strong id="statVariants">0</strong></article>
+          <article><small>Stock total</small><strong id="statStock">0</strong></article>
+        </div>
+        <div class="toolbar">
+          <input id="productSearch" type="search" placeholder="Buscar por modelo, SKU o categoría…">
+          <select id="statusFilter"><option value="all">Todos</option><option value="active">Publicados</option><option value="inactive">Pausados</option></select>
+          <button id="refreshBtn" class="btn btn-light">Actualizar</button>
+        </div>
+        <div class="table-card"><div class="table-wrap"><table><thead><tr><th>Producto</th><th>Categoría</th><th>Precio</th><th>Variantes</th><th>Stock</th><th>Estado</th><th></th></tr></thead><tbody id="productsTable"></tbody></table></div><div id="emptyProducts" class="empty" hidden>No hay productos para mostrar.</div></div>
+      </section>
+
+      <section id="settingsView" hidden>
+        <div class="panel-card">
+          <h2>Datos del negocio</h2><p class="muted">Datos generales del catálogo ZILA.</p>
+          <form id="settingsForm" class="form-grid">
+            <label>WhatsApp<input id="settingWhatsapp"></label>
+            <label>Instagram<input id="settingInstagram"></label>
+            <label class="full">Dirección<input id="settingAddress"></label>
+            <label>Horarios<input id="settingHours"></label>
+            <label>Envíos<input id="settingShipping"></label>
+            <label class="full">Política de cambios y devoluciones<textarea id="settingReturns" rows="10"></textarea></label>
+            <button class="btn btn-dark" type="submit">Guardar datos</button>
+          </form><p id="settingsStatus" class="save-status"></p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="productModal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head"><div><span class="eyebrow">Catálogo</span><h2 id="productModalTitle">Editar producto</h2></div><button id="closeProductModal" class="close" type="button">×</button></div>
+      <form id="productForm">
+        <input id="productId" type="hidden">
+        <div class="form-grid">
+          <label>SKU *<input id="pSku" required></label><label>Nombre *<input id="pName" required></label><label>Categoría<input id="pCategory" list="categoryList"></label><label>Subcategoría<input id="pSubcategory"></label><label>Colección<input id="pCollection"></label><label>Material<input id="pMaterial"></label><label>Precio base *<input id="pPrice" type="number" min="0" step="1" required></label><label>Orden<input id="pSortOrder" type="number" min="0" step="1"></label><label class="full">Descripción corta<textarea id="pShort" rows="3"></textarea></label><label class="switch-line full"><input id="pActive" type="checkbox"><span>Producto publicado</span></label>
+        </div>
+        <datalist id="categoryList"><option>Botas y botinetas</option><option>Texanas</option><option>Mocasines</option><option>Borcegos</option><option>Zapatos</option><option>Sandalias</option></datalist>
+
+        <div class="editor-section">
+          <div class="editor-section-head"><div><h3>Variantes</h3><p>Color, talle, stock y precio.</p></div><button type="button" id="addVariantBtn" class="btn btn-light">+ Agregar variante</button></div>
+          <div class="variant-head"><span>Color</span><span>Talle</span><span>Stock</span><span>Precio</span><span></span></div><div id="variantsEditor" class="variant-list"></div>
+        </div>
+
+        <div class="editor-section">
+          <div class="editor-section-head"><div><h3>Imágenes</h3><p>Subí archivos o pegá una URL.</p></div></div>
+          <div class="upload-box"><input id="uploadColor" placeholder="Color, ej. Negro"><input id="uploadType" placeholder="Tipo, ej. Lateral"><input id="uploadFile" type="file" accept="image/*"><button type="button" id="uploadImageBtn" class="btn btn-light">Subir imagen</button></div>
+          <p id="uploadStatus" class="save-status"></p><div id="imagesEditor" class="image-list"></div><button type="button" id="addImageUrlBtn" class="btn btn-light">+ Agregar imagen por URL</button>
+        </div>
+
+        <div class="modal-actions"><button type="button" id="deleteProductBtn" class="btn btn-danger">Eliminar</button><div><button type="button" id="cancelProductBtn" class="btn btn-light">Cancelar</button><button type="submit" class="btn btn-dark">Guardar producto</button></div></div>
+        <p id="productSaveStatus" class="save-status"></p>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="./admin.js"></script>
+</body>
+</html>
