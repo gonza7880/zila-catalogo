@@ -7,7 +7,7 @@
   "redirects": [
     {
       "source": "/hero-zila.jpg",
-      "destination": "https://drive.google.com/thumbnail?id=1vGB3wG3wtiAZnigunJZWyGq74_cweDGG&sz=w1600",
+      "destination": "/hero-zila-lifestyle.jpg",
       "permanent": false
     }
   ],
