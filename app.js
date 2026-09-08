@@ -91,6 +91,7 @@ async function loadCatalog(){
 }
 
 const money = n => new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",maximumFractionDigits:0}).format(Number(n)||0);
+const transferPrice = n => Number(n||0) * .8;
 const norm = s => String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 const $ = id => document.getElementById(id);
 
@@ -148,7 +149,13 @@ function renderProducts(){
       <span class="product-cat">${esc(p.category)}</span>
       <h3 class="product-title">${esc(p.name)}</h3>
       <p class="product-desc">${esc(p.short)}</p>
-      <div class="product-bottom"><span class="price">${money(p.price)}</span><button class="view-btn" data-sku="${esc(p.sku)}">Ver opciones</button></div>
+      <div class="product-bottom">
+        <div class="product-pricing">
+          <span class="price">${money(p.price)}</span>
+          <small class="transfer-price">20% OFF transferencia · ${money(transferPrice(p.price))}</small>
+        </div>
+        <button class="view-btn" data-sku="${esc(p.sku)}">Ver opciones</button>
+      </div>
     </div></article>`).join("");
 }
 function openProduct(sku){
@@ -160,6 +167,7 @@ function openProduct(sku){
   $("detailDescription").textContent=activeProduct.short;
   $("detailMaterial").textContent=[activeProduct.material,activeProduct.collection].filter(Boolean).join(" · ");
   $("detailPrice").textContent=money(activeProduct.price);
+  $("detailTransferPrice").textContent=`${money(transferPrice(activeProduct.price))} con transferencia`;
   renderColorOptions(); renderSizeOptions(); renderGallery();
   $("productModal").classList.add("open");
 }
@@ -210,14 +218,16 @@ function openBag(){
 function renderBagItems(){
   $("bagItems").innerHTML=bag.map((x,i)=>`<div class="bag-item"><img src="${esc(x.image)}" alt=""><div><h4>${esc(x.name)}</h4><p>${esc(x.color)} · Talle ${esc(x.size)} · ${x.qty} u. · ${money(x.price*x.qty)}</p></div><button class="remove-item" data-remove="${i}">Quitar</button></div>`).join("");
   $("bagItems").querySelectorAll("[data-remove]").forEach(b=>b.onclick=()=>{bag.splice(Number(b.dataset.remove),1);saveBag();renderBag();if(bag.length)renderBagItems();else closeModal("bagModal")});
-  $("checkoutTotal").textContent=money(bag.reduce((a,x)=>a+x.qty*x.price,0));
+  const total=bag.reduce((a,x)=>a+x.qty*x.price,0);
+  $("checkoutTotal").textContent=money(total);
+  $("checkoutTransferTotal").textContent=money(transferPrice(total));
 }
 function sendWhatsapp(){
   const name=$("customerName").value.trim(), phone=$("customerPhone").value.trim();
   if(!name||!phone){alert("Completá nombre y teléfono.");return}
   const total=bag.reduce((a,x)=>a+x.qty*x.price,0);
   const items=bag.map(x=>`• ${x.name} - ${x.color} - Talle ${x.size} x${x.qty} (${money(x.price*x.qty)})`).join("\n");
-  const msg=`Hola ZILA, quiero consultar disponibilidad de:\n\n${items}\n\nTotal estimado: ${money(total)}\n\nNombre: ${name}\nTeléfono: ${phone}\nEntrega: ${$("deliveryType").value}\nLocalidad: ${$("customerLocation").value.trim()||"-"}\nAclaraciones: ${$("customerNotes").value.trim()||"-"}\n\nSé que la disponibilidad, envío y forma de pago se confirman por este medio.`;
+  const msg=`Hola ZILA, quiero consultar disponibilidad de:\n\n${items}\n\nTotal estimado: ${money(total)}\nBeneficios de pago: hasta 6 cuotas sin interés o ${money(transferPrice(total))} con transferencia (20% OFF).\n\nNombre: ${name}\nTeléfono: ${phone}\nEntrega: ${$("deliveryType").value}\nLocalidad: ${$("customerLocation").value.trim()||"-"}\nAclaraciones: ${$("customerNotes").value.trim()||"-"}\n\nSé que la disponibilidad, envío y forma de pago se confirman por este medio.`;
   const number="5491137696880";
   window.open(`https://wa.me/${number}?text=${encodeURIComponent(msg)}`,"_blank","noopener");
 }
