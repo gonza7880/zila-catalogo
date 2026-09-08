@@ -20,6 +20,13 @@
 </head>
 <body>
   <header class="topbar">
+    <div class="promo-bar" role="note" aria-label="Beneficios de pago">
+      <div class="container promo-bar-inner">
+        <strong>Hasta 6 cuotas sin interés</strong>
+        <span class="promo-dot" aria-hidden="true"></span>
+        <strong>20% OFF con transferencia</strong>
+      </div>
+    </div>
     <div class="container nav">
       <a class="brand" href="#inicio">
         <img src="logo-zila.jpg" alt="ZILA">
@@ -111,6 +118,35 @@
           <p id="detailDescription" class="detail-description"></p>
           <p id="detailMaterial" class="detail-meta"></p>
           <div id="detailPrice" class="detail-price"></div>
+          <div class="payment-benefits" aria-label="Beneficios de pago">
+            <div class="payment-benefit">
+              <span class="payment-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                  <path d="M3 10h18"></path>
+                  <path d="M7 15h4"></path>
+                </svg>
+              </span>
+              <span>
+                <strong>Hasta 6 cuotas sin interés</strong>
+                <small>Consultá condiciones al confirmar tu compra.</small>
+              </span>
+            </div>
+            <div class="payment-benefit">
+              <span class="payment-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M7 7h11"></path>
+                  <path d="m15 4 3 3-3 3"></path>
+                  <path d="M17 17H6"></path>
+                  <path d="m9 20-3-3 3-3"></path>
+                </svg>
+              </span>
+              <span>
+                <strong>20% OFF con transferencia</strong>
+                <small id="detailTransferPrice"></small>
+              </span>
+            </div>
+          </div>
           <div class="option-block"><label>Color</label><div id="colorOptions" class="option-pills"></div></div>
           <div class="option-block">
             <div class="option-label-row"><label>Talle</label><button type="button" class="size-guide-inline" id="openSizeGuideProduct">¿Cuál es mi talle?</button></div>
@@ -166,6 +202,11 @@
       <div class="modal-head"><div><span class="section-kicker">Tu selección</span><h2>Consultar por WhatsApp</h2></div><button class="close" id="closeBagModal" aria-label="Cerrar">×</button></div>
       <div id="bagItems" class="bag-items"></div>
       <div class="bag-summary-row"><span>Total estimado</span><strong id="checkoutTotal">$0</strong></div>
+      <div class="checkout-benefits" aria-label="Beneficios de pago">
+        <span class="checkout-benefit"><b>6 cuotas</b> sin interés</span>
+        <span class="checkout-separator" aria-hidden="true">·</span>
+        <span class="checkout-benefit"><b>20% OFF transferencia</b> · <strong id="checkoutTransferTotal">$0</strong></span>
+      </div>
       <form id="checkoutForm" class="checkout-form">
         <label><span>Nombre y apellido *</span><input id="customerName" required></label>
         <label><span>Teléfono *</span><input id="customerPhone" required inputmode="tel"></label>
