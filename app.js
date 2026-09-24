@@ -177,6 +177,14 @@ function openProduct(sku){
   $("detailTransferPrice").textContent=`${money(transferPrice(activeProduct.price))} con transferencia`;
   renderColorOptions(); renderSizeOptions(); renderGallery();
   $("productModal").classList.add("open");
+  document.dispatchEvent(new CustomEvent("zila:view_item", {
+    detail: {
+      sku: activeProduct.sku,
+      name: activeProduct.name,
+      category: activeProduct.category,
+      price: Number(activeProduct.price || 0)
+    }
+  }));
 }
 function renderColorOptions(){
   const colors=[...new Set(activeProduct.variants.filter(v=>v.stock>0).map(v=>v.color))];
