@@ -3,6 +3,8 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/meta-feed.csv", "destination": "/api/meta-feed" },
+    { "source": "/meta-images/pietra-plata.jpg", "destination": "/api/pietra-image?color=plata" },
+    { "source": "/meta-images/pietra-dorado.jpg", "destination": "/api/pietra-image?color=dorado" },
     { "source": "/admin", "destination": "/admin/index.html" }
   ],
   "redirects": [
