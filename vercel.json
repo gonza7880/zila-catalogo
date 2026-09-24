@@ -2,6 +2,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
+    { "source": "/meta-feed.csv", "destination": "/api/meta-feed" },
     { "source": "/admin", "destination": "/admin/index.html" }
   ],
   "redirects": [

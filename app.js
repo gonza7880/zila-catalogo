@@ -125,7 +125,14 @@ async function init(){
   document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("open")}));
 
   // Refresca precios, stock e imágenes desde Supabase sin bloquear el primer render.
-  void loadCatalog();
+  await loadCatalog();
+  openProductFromUrl();
+}
+function openProductFromUrl(){
+  const params=new URLSearchParams(window.location.search);
+  const sku=(params.get("producto")||params.get("product")||"").trim().toUpperCase();
+  if(!sku)return;
+  openProduct(sku);
 }
 function renderFilters(){
   const cats=["Todos",...new Set(PRODUCTS.map(p=>p.category).filter(Boolean))];
