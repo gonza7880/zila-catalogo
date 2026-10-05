@@ -55,6 +55,7 @@ async function loadCatalog(){
       short: row.short_description || "",
       material: row.material || "",
       price: Number(row.base_price || 0),
+      regularPrice: Number(row.base_price || 0),
       variants: (row.product_variants || [])
         .filter(v => v.active !== false)
         .map(v => ({
@@ -93,6 +94,20 @@ async function loadCatalog(){
 const money = n => new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",maximumFractionDigits:0}).format(Number(n)||0);
 const transferPrice = n => Number(n||0) * .8;
 const norm = s => String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+function productPricing(p){
+  const regular = Number(p?.regularPrice ?? p?.price ?? 0);
+  const variantPrices = (p?.variants || []).map(v=>Number(v.price)).filter(n=>Number.isFinite(n) && n>0 && n<regular);
+  const promo = variantPrices.length ? Math.min(...variantPrices) : null;
+  const current = promo ?? regular;
+  const discount = promo && regular>0 ? Math.round((1 - promo/regular) * 100) : 0;
+  return { regular, current, promoActive:Boolean(promo), discount };
+}
+function cardPriceHtml(p){
+  const pr=productPricing(p);
+  return pr.promoActive
+    ? `<span class="promo-badge">${pr.discount}% OFF</span><div class="price-line"><s class="old-price">${money(pr.regular)}</s><span class="price promo-price">${money(pr.current)}</span></div>`
+    : `<span class="price">${money(pr.current)}</span>`;
+}
 const $ = id => document.getElementById(id);
 
 let PRODUCTS = window.ZILA_PRODUCTS || [];
@@ -158,8 +173,8 @@ function renderProducts(){
       <p class="product-desc">${esc(p.short)}</p>
       <div class="product-bottom">
         <div class="product-pricing">
-          <span class="price">${money(p.price)}</span>
-          <small class="transfer-price">20% OFF transferencia · ${money(transferPrice(p.price))}</small>
+          ${cardPriceHtml(p)}
+          <small class="transfer-price">20% OFF transferencia · ${money(transferPrice(productPricing(p).current))}</small>
         </div>
         <button class="view-btn" data-sku="${esc(p.sku)}">Ver opciones</button>
       </div>
@@ -173,8 +188,11 @@ function openProduct(sku){
   $("detailCategory").textContent=activeProduct.category;
   $("detailDescription").textContent=activeProduct.short;
   $("detailMaterial").textContent=[activeProduct.material,activeProduct.collection].filter(Boolean).join(" · ");
-  $("detailPrice").textContent=money(activeProduct.price);
-  $("detailTransferPrice").textContent=`${money(transferPrice(activeProduct.price))} con transferencia`;
+  const pr=productPricing(activeProduct);
+  $("detailPrice").innerHTML=pr.promoActive
+    ? `<span class="promo-badge">${pr.discount}% OFF</span><s class="old-price">${money(pr.regular)}</s><strong class="promo-detail-price">${money(pr.current)}</strong>`
+    : money(pr.current);
+  $("detailTransferPrice").textContent=`${money(transferPrice(pr.current))} con transferencia`;
   renderColorOptions(); renderSizeOptions(); renderGallery();
   $("productModal").classList.add("open");
   document.dispatchEvent(new CustomEvent("zila:view_item", {
@@ -182,7 +200,7 @@ function openProduct(sku){
       sku: activeProduct.sku,
       name: activeProduct.name,
       category: activeProduct.category,
-      price: Number(activeProduct.price || 0)
+      price: Number(productPricing(activeProduct).current || 0)
     }
   }));
 }
@@ -215,7 +233,7 @@ function addToBag(){
   const v=activeProduct.variants.find(v=>v.color===selectedColor&&String(v.size)===String(selectedSize)); if(!v)return;
   const key=`${activeProduct.sku}|${selectedColor}|${selectedSize}`;
   const existing=bag.find(x=>x.key===key);
-  if(existing){if(existing.qty<v.stock)existing.qty++} else bag.push({key,sku:activeProduct.sku,name:activeProduct.name,color:selectedColor,size:selectedSize,qty:1,price:Number(v.price||activeProduct.price),image:primaryImage(activeProduct),stock:v.stock});
+  if(existing){if(existing.qty<v.stock)existing.qty++} else bag.push({key,sku:activeProduct.sku,name:activeProduct.name,color:selectedColor,size:selectedSize,qty:1,price:Number(v.price||productPricing(activeProduct).current),image:primaryImage(activeProduct),stock:v.stock});
   saveBag(); renderBag(); closeModal("productModal");
 }
 function saveBag(){sessionStorage.setItem("zila_bag",JSON.stringify(bag))}
