@@ -55,6 +55,8 @@ $("cancelProductBtn").onclick = closeProductEditor;
 $("addVariantBtn").onclick = ()=>{ currentVariants.push({color:"",size:"",stock:0,price:""}); renderVariantsEditor(); };
 $("addImageUrlBtn").onclick = ()=>{ currentImages.push({image_url:"",color:"",image_type:"",sort_order:currentImages.length+1,storage_path:""}); renderImagesEditor(); };
 $("uploadImageBtn").onclick = uploadImage;
+$("pPromoActive").addEventListener("change", syncPromoField);
+$("pPrice").addEventListener("input", ()=>{ if($("pPromoActive").checked && !$("pPromoPrice").value) $("pPromoPrice").value=$("pPrice").value; });
 $("productForm").addEventListener("submit", saveProduct);
 $("deleteProductBtn").onclick = deleteProduct;
 $("settingsForm").addEventListener("submit", saveSettings);
@@ -97,6 +99,24 @@ function primaryImage(p){
   return [...(p.product_images||[])].filter(i=>i.active!==false).sort((a,b)=>(a.sort_order||99)-(b.sort_order||99))[0]?.image_url || "../logo-zila.jpg";
 }
 
+function promoInfo(p){
+  const regular = Number(p?.base_price || 0);
+  const prices = (p?.product_variants || [])
+    .filter(v=>v.active!==false)
+    .map(v=>Number(v.price))
+    .filter(n=>Number.isFinite(n) && n>0 && n<regular);
+  const promo = prices.length ? Math.min(...prices) : null;
+  return { active:Boolean(promo), regular, promo };
+}
+
+function syncPromoField(){
+  const active = $("pPromoActive").checked;
+  $("pPromoPrice").disabled = !active;
+  if(active && !$("pPromoPrice").value && $("pPrice").value){
+    $("pPromoPrice").value = $("pPrice").value;
+  }
+}
+
 function renderProducts(){
   const q = $("productSearch").value.trim().toLowerCase();
   const status = $("statusFilter").value;
@@ -111,7 +131,7 @@ function renderProducts(){
     return `<tr>
       <td><div class="product-cell"><img class="product-thumb" src="${esc(primaryImage(p))}" alt=""><div><strong>${esc(p.name)}</strong><small>${esc(p.sku)}</small></div></div></td>
       <td>${esc(p.category||"-")}</td>
-      <td>${money(p.base_price)}</td>
+      <td>${(()=>{const pr=promoInfo(p);return pr.active?`<div class="promo-price-admin"><s>${money(pr.regular)}</s><strong>${money(pr.promo)}</strong><span class="promo-tag-admin">PROMO</span></div>`:money(pr.regular)})()}</td>
       <td>${(p.product_variants||[]).length}</td>
       <td>${stock}</td>
       <td><span class="status-pill ${p.active?"on":"off"}">${p.active?"Publicado":"Pausado"}</span></td>
@@ -135,6 +155,10 @@ function openProductEditor(product){
   $("pCollection").value = product?.collection || "";
   $("pMaterial").value = product?.material || "";
   $("pPrice").value = product?.base_price ?? "";
+  const promo = promoInfo(product);
+  $("pPromoActive").checked = promo.active;
+  $("pPromoPrice").value = promo.promo ?? "";
+  syncPromoField();
   $("pSortOrder").value = product?.sort_order ?? products.length+1;
   $("pShort").value = product?.short_description || "";
   $("pActive").checked = product ? product.active !== false : true;
@@ -213,11 +237,27 @@ async function saveProduct(e){
   if(result.error){ $("productSaveStatus").textContent="Error: "+result.error.message; return; }
   productId=result.data.id;
 
+  const promoActive = $("pPromoActive").checked;
+  const promoPrice = Number($("pPromoPrice").value || 0);
+  if(promoActive && (!promoPrice || promoPrice >= payload.base_price)){
+    $("productSaveStatus").textContent="El precio promocional debe ser menor al precio regular.";
+    return;
+  }
+
+  const wasPromo = promoInfo(editingProduct).active;
+
   let d1=await supabase.from("product_variants").delete().eq("product_id",productId);
   if(d1.error){ $("productSaveStatus").textContent="Error variantes: "+d1.error.message; return; }
 
   const variantRows=currentVariants.filter(v=>String(v.color||"").trim() && String(v.size||"").trim()).map(v=>({
-    product_id:productId,color:String(v.color).trim(),size:Number(v.size),stock:Number(v.stock||0),price:v.price===""||v.price==null?payload.base_price:Number(v.price),active:true
+    product_id:productId,
+    color:String(v.color).trim(),
+    size:Number(v.size),
+    stock:Number(v.stock||0),
+    price:promoActive
+      ? promoPrice
+      : (wasPromo ? payload.base_price : (v.price===""||v.price==null?payload.base_price:Number(v.price))),
+    active:true
   }));
   if(variantRows.length){ const ins=await supabase.from("product_variants").insert(variantRows); if(ins.error){ $("productSaveStatus").textContent="Error variantes: "+ins.error.message; return; } }
 
